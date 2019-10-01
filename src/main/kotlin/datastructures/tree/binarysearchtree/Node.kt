@@ -105,17 +105,6 @@ class Node<V: Comparable<V>>(
         }
     }
 
-/*
-    fun height(): Int {
-        if (this.isLeaf()) {
-            return 0
-        }
-        val leftHeight = if (left != null) left!!.height() else 0
-        val rightHeight = if (right != null) right!!.height() else 0
-        return maxOf(leftHeight, rightHeight) + 1;
-    }
-*/
-
     fun getHeight(): Int {
         var height = 0
         visit { n, d ->

@@ -47,7 +47,6 @@ class NodeTest {
         }
         n.visit(::printNode)
         Assert.assertEquals(6, n.getHeight())
-//        Assert.assertEquals(6, n.height())
 
         Assert.assertFalse(n.isBalanced())
 
