@@ -1,16 +1,11 @@
 package datastructures.tree.binarysearchtree
 
+import datastructures.util.printNode
 import org.junit.Assert
 import org.junit.Test
 
 class NodeTest {
 
-    fun printNode(v: Node<Int>, depth: Int) {
-        for (i in 1..depth) {
-            print('-')
-        }
-        println(v.key)
-    }
 
     @Test
     fun test() {
@@ -54,6 +49,20 @@ class NodeTest {
 
         Assert.assertEquals(3, n.getHeight())
         Assert.assertTrue(n.isBalanced())
+    }
+
+    @Test
+    fun backbone() {
+        val n = Node(50)
+        for (i in arrayOf(20, 30, 40, 10, 80, 70, 60, 90)) {
+            n.insert(i)
+        }
+        n.visit(::printNode)
+
+        n.createBackbone()
+
+        n.visit(::printNode)
+
     }
 
 }

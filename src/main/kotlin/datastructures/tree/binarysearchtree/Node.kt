@@ -1,5 +1,7 @@
 package datastructures.tree.binarysearchtree
 
+import datastructures.util.printNode
+
 class Node<V: Comparable<V>>(
     var key: V,
     var left: Node<V>? = null,
@@ -71,6 +73,49 @@ class Node<V: Comparable<V>>(
             node.left = leftNode.left
         }
     }
+    /*
+         Opa            Opa
+          \              \
+          Par    -->     Ch
+         /  \           /  \
+        Ch   Z         X   Par
+       /  \                /  \
+      X    Y              Y    Z
+    */
+    private fun rotateRight(opa: Node<V>?, parent: Node<V>, leftChild: Node<V>): Node<V>? {
+        var result: Node<V>? = parent
+        if (opa != null) {
+            opa.right = leftChild
+        } else {
+            result = opa
+        }
+        parent.left = leftChild.right
+        leftChild.right = parent
+
+        return result
+    }
+
+    /*
+         Opa            Opa
+          \              \
+          Par    -->     Ch
+         /  \           /  \
+        Z   Ch        Par   Y
+           /  \      /  \
+          X    Y    Z    X
+    */
+    private fun rotateLeft(opa: Node<V>?, parent: Node<V>, rightChild: Node<V>) {
+        opa?.let {
+            if (it.left == parent) {
+                it.left = rightChild
+            }
+            if (it.right == parent) {
+                it.right = rightChild
+            }
+        }
+        parent.right = rightChild.left
+        rightChild.left = parent
+    }
 
     private fun getParentOfMax(n: Node<V>): Node<V> {
         if (n.right == null || n.right!!.right == null) {
@@ -102,6 +147,13 @@ class Node<V: Comparable<V>>(
         return when (right) {
             null -> this
             else -> right!!.max()
+        }
+    }
+
+    fun min(): Node<V> {
+        return when (left) {
+            null -> this
+            else -> left!!.min()
         }
     }
 
@@ -139,8 +191,41 @@ class Node<V: Comparable<V>>(
     }
 
 
+    /**
+     * 1 Make a sorted linked list by right-rotations
+     * 2 Rotate every second node
+     */
     fun doBalance() {
-        TODO() //left/right- rotations
+        this.createBackbone()
+        this.rotateEverySecondNode()
+    }
+
+    /*
+     *      5           2
+     *    2   7    ->     3
+     *      3               5
+     *                        7
+     */
+    fun createBackbone() {
+        var opa : Node<V>? = null
+        var parent : Node<V>? = min()
+        var leftChild: Node<V>?
+
+        while (parent != null) {
+            leftChild = parent.left
+            if (leftChild != null) {
+                rotateRight(opa, parent, leftChild)
+                parent = leftChild
+            } else {
+                opa = parent;
+                parent = parent.right
+            }
+            //visit(::printNode)
+        }
+    }
+
+    private fun rotateEverySecondNode() {
+
     }
 
 
