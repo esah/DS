@@ -1,6 +1,51 @@
 package datastructures.tree.binarysearchtree
 
-import datastructures.util.printNode
+/*
+      \              \
+      Par    -->     Ch
+     /  \           /  \
+    Ch   Z         X   Par
+   /  \                /  \
+  X    Y              Y    Z
+*/
+fun <V:Comparable<V>> rotateRight(par: Node<V>, ch: Node<V>) {
+    swapKey(par, ch)
+
+    val tmpParRight = par.right
+    par.left = ch.left
+    par.right = ch
+
+    ch.left = ch.right
+    ch.right = tmpParRight
+}
+
+/*
+      \              \
+      Par    -->     Ch
+     /  \           /  \
+    Z   Ch        Par   Y
+       /  \      /  \
+      X    Y    Z    X
+*/
+fun <V:Comparable<V>> rotateLeft(par: Node<V>, ch: Node<V>) {
+    swapKey(par, ch)
+
+    val tmpParLeft = par.left
+    par.left = ch
+    par.right = ch.right
+
+    val tmpChLeft = ch.left
+    ch.left = tmpParLeft
+    ch.right = tmpChLeft
+
+}
+
+private fun <V:Comparable<V>> swapKey(n1: Node<V>, n2: Node<V>) {
+    val tmpKey = n1.key
+    n1.key = n2.key
+    n2.key = tmpKey
+}
+
 
 class Node<V: Comparable<V>>(
     var key: V,
@@ -73,49 +118,19 @@ class Node<V: Comparable<V>>(
             node.left = leftNode.left
         }
     }
-    /*
-         Opa            Opa
-          \              \
-          Par    -->     Ch
-         /  \           /  \
-        Ch   Z         X   Par
-       /  \                /  \
-      X    Y              Y    Z
-    */
-    private fun rotateRight(opa: Node<V>?, parent: Node<V>, leftChild: Node<V>): Node<V>? {
-        var result: Node<V>? = parent
-        if (opa != null) {
-            opa.right = leftChild
-        } else {
-            result = opa
-        }
-        parent.left = leftChild.right
-        leftChild.right = parent
 
-        return result
+    fun rotateLeft() {
+        if (right != null) {
+            rotateLeft(this, right!!)
+        }
     }
 
-    /*
-         Opa            Opa
-          \              \
-          Par    -->     Ch
-         /  \           /  \
-        Z   Ch        Par   Y
-           /  \      /  \
-          X    Y    Z    X
-    */
-    private fun rotateLeft(opa: Node<V>?, parent: Node<V>, rightChild: Node<V>) {
-        opa?.let {
-            if (it.left == parent) {
-                it.left = rightChild
-            }
-            if (it.right == parent) {
-                it.right = rightChild
-            }
+    fun rotateRight() {
+        if (left != null) {
+            rotateRight(this, left!!)
         }
-        parent.right = rightChild.left
-        rightChild.left = parent
     }
+
 
     private fun getParentOfMax(n: Node<V>): Node<V> {
         if (n.right == null || n.right!!.right == null) {
@@ -200,25 +215,23 @@ class Node<V: Comparable<V>>(
         this.rotateEverySecondNode()
     }
 
-    /*
+    /*                1
      *      5           2
      *    2   7    ->     3
-     *      3               5
+     *  1   3               5
      *                        7
      */
     fun createBackbone() {
-        var opa : Node<V>? = null
-        var parent : Node<V>? = min()
+        var node : Node<V>? = min()
         var leftChild: Node<V>?
 
-        while (parent != null) {
-            leftChild = parent.left
+        while (node != null) {
+            leftChild = node.left
             if (leftChild != null) {
-                rotateRight(opa, parent, leftChild)
-                parent = leftChild
+                rotateRight(node, leftChild)
+                node = leftChild
             } else {
-                opa = parent;
-                parent = parent.right
+                node = node.right
             }
             //visit(::printNode)
         }

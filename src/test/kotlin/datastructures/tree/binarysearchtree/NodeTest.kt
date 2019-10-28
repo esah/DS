@@ -51,16 +51,66 @@ class NodeTest {
         Assert.assertTrue(n.isBalanced())
     }
 
+    /*
+          \             \
+          3    -->      5
+         /  \          /  \
+        1    5        3    7
+           /  \      /  \
+          4    7    1    4
+    */
+    @Test
+    fun rotateLeft() {
+        val n = Node(3)
+        for (i in arrayOf(1, 5, 4, 7)) {
+            n.insert(i)
+        }
+        println("Original: ")
+        n.visit(::printNode)
+
+        rotateLeft(n, n.right!!)
+
+        println("Rotated: ")
+        n.visit(::printNode)
+    }
+
+/*
+      \              \
+       5     -->     2
+     /  \           /  \
+    2    7         1    5
+   /  \                /  \
+  1    3              3    7
+*/
+
+    @Test
+    fun rotateRight() {
+        val n = Node(5)
+        for (i in arrayOf(2, 7, 1, 3)) {
+            n.insert(i)
+        }
+        println("Original: ")
+        n.visit(::printNode)
+
+        rotateRight(n, n.left!!)
+
+        println("Rotated: ")
+        n.visit(::printNode)
+    }
+
+
     @Test
     fun backbone() {
         val n = Node(50)
         for (i in arrayOf(20, 30, 40, 10, 80, 70, 60, 90)) {
             n.insert(i)
         }
+        println("Original: ")
         n.visit(::printNode)
 
         n.createBackbone()
 
+        println("Backbone: ")
         n.visit(::printNode)
 
     }
