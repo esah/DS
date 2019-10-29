@@ -222,18 +222,12 @@ class Node<V: Comparable<V>>(
      *                        7
      */
     fun createBackbone() {
-        var node : Node<V>? = min()
-        var leftChild: Node<V>?
+        // visit { n, i -> while (n.left != null) n.rotateRight() }
 
-        while (node != null) {
-            leftChild = node.left
-            if (leftChild != null) {
-                rotateRight(node, leftChild)
-                node = leftChild
-            } else {
-                node = node.right
-            }
-            //visit(::printNode)
+        var current: Node<V>? = this
+        while (current != null) {
+            while (current.left != null) current.rotateRight()
+            current = current.right
         }
     }
 

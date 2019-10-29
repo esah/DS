@@ -98,17 +98,28 @@ class NodeTest {
         n.visit(::printNode)
     }
 
-
+    /*                  1
+     *        5           2
+     *    2        7  ->    3
+     *  1   3    6  8         5
+     *                         6
+     *                           7
+     *                            8
+     */
     @Test
     fun backbone() {
-        val n = Node(50)
-        for (i in arrayOf(20, 30, 40, 10, 80, 70, 60, 90)) {
+        val n = Node(5)
+        for (i in arrayOf(2, 7, 1, 3, 6, 8)) {
             n.insert(i)
         }
         println("Original: ")
         n.visit(::printNode)
 
+        Assert.assertEquals(2, n.getHeight())
+
         n.createBackbone()
+
+        Assert.assertEquals(6, n.getHeight())
 
         println("Backbone: ")
         n.visit(::printNode)
