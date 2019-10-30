@@ -8,7 +8,7 @@ class NodeTest {
 
 
     @Test
-    fun test() {
+    fun delete() {
         val n = Node(10)
         for (i in arrayOf(1, 5, 7, 21, 50, 11, 51, 9, 4, 3)) {
             n.insert(i)
@@ -36,19 +36,29 @@ class NodeTest {
 
     @Test
     fun height() {
-        val n = Node(10)
-        for (i in arrayOf(20, 30, 40, 50, 60, 70)) {
+        var n = Node(1)
+        for (i in arrayOf(2, 3, 4, 5, 6, 7)) {
             n.insert(i)
         }
-        n.visit(::printNode)
         Assert.assertEquals(6, n.getHeight())
-
         Assert.assertFalse(n.isBalanced())
 
-        n.doBalance()
+        n = Node(4)
+        for (i in arrayOf(2, 6, 1, 3, 5, 7)) {
+            n.insert(i)
+        }
 
-        Assert.assertEquals(3, n.getHeight())
+        Assert.assertEquals(2, n.getHeight())
         Assert.assertTrue(n.isBalanced())
+    }
+
+    @Test
+    fun getN() {
+        val n = Node(1)
+        for (i in arrayOf(2, 3, 7, 5, 6, 4)) {
+            n.insert(i)
+        }
+        Assert.assertEquals(7, n.getN())
     }
 
     /*
@@ -123,6 +133,19 @@ class NodeTest {
 
         println("Backbone: ")
         n.visit(::printNode)
+
+    }
+
+   @Test
+    fun balance() {
+        val n = Node(1)
+        for (i in arrayOf(2, 3, 5, 6, 7, 8)) {
+            n.insert(i)
+        }
+        Assert.assertEquals(6, n.getHeight())
+        n.doBalance()
+       Assert.assertTrue(n.isBalanced())
+       Assert.assertEquals(2, n.getHeight())
 
     }
 

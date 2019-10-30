@@ -1,5 +1,7 @@
 package datastructures.tree.binarysearchtree
 
+import kotlin.math.log2
+
 /*
       \              \
       Par    -->     Ch
@@ -165,6 +167,9 @@ class Node<V: Comparable<V>>(
         }
     }
 
+    /*
+    * Time complexity: log(n)
+     */
     fun min(): Node<V> {
         return when (left) {
             null -> this
@@ -172,6 +177,9 @@ class Node<V: Comparable<V>>(
         }
     }
 
+    /*
+    * Time complexity: O(n)
+     */
     fun getHeight(): Int {
         var height = 0
         visit { n, d ->
@@ -181,6 +189,18 @@ class Node<V: Comparable<V>>(
         }
         return height
     }
+
+    fun getN(): Int {
+        var result = 0
+        visit { n, d -> result++ }
+        return result
+    }
+
+/*
+    fun isPbt(): Boolean {
+        return log2(getN().toDouble()).toInt() == getHeight()
+    }
+*/
 
     fun isBalanced(): Boolean {
         var maxHeight = 0
@@ -223,7 +243,6 @@ class Node<V: Comparable<V>>(
      */
     fun createBackbone() {
         // visit { n, i -> while (n.left != null) n.rotateRight() }
-
         var current: Node<V>? = this
         while (current != null) {
             while (current.left != null) current.rotateRight()
@@ -231,7 +250,20 @@ class Node<V: Comparable<V>>(
         }
     }
 
+    //log(n) * n
     private fun rotateEverySecondNode() {
+        val balancedHeight = log2(getN().toDouble()).toInt()
+
+        while (getHeight() != balancedHeight) {
+            var current: Node<V>? = this
+            while (current != null) {
+                current.rotateLeft()
+                current = current.right
+                if (getHeight() == balancedHeight) {
+                    break
+                }
+            }
+        }
 
     }
 
