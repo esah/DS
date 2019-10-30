@@ -139,13 +139,15 @@ class NodeTest {
    @Test
     fun balance() {
         val n = Node(1)
-        for (i in arrayOf(2, 3, 5, 6, 7, 8)) {
+        for (i in arrayOf(9, 3, 8, 6, 50, 7, 5, 2, 22)) {
             n.insert(i)
         }
-        Assert.assertEquals(6, n.getHeight())
+        Assert.assertEquals(5, n.getHeight())
         n.doBalance()
+       n.visit(::printNode)
+
        Assert.assertTrue(n.isBalanced())
-       Assert.assertEquals(2, n.getHeight())
+       Assert.assertEquals(3, n.getHeight())
 
     }
 
