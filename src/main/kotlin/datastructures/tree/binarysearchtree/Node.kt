@@ -196,11 +196,12 @@ class Node<V: Comparable<V>>(
         return result
     }
 
-/*
+    fun getBalancedHeight() = log2(getN().toDouble()).toInt()
+
     fun isPbt(): Boolean {
-        return log2(getN().toDouble()).toInt() == getHeight()
+        return getBalancedHeight() == getHeight()
     }
-*/
+
 
     fun isBalanced(): Boolean {
         var maxHeight = 0
@@ -250,21 +251,18 @@ class Node<V: Comparable<V>>(
         }
     }
 
-    //log(n) * n
+    // O(n)
     private fun rotateEverySecondNode() {
-        val balancedHeight = log2(getN().toDouble()).toInt()
-
-        while (getHeight() != balancedHeight) {
+        var times = getN() / 2
+        while (times > 1) {
             var current: Node<V>? = this
             while (current != null) {
                 current.rotateLeft()
                 current = current.right
-                if (getHeight() == balancedHeight) {
-                    break
-                }
             }
+            times /= 2
         }
-
+        assert (isPbt())
     }
 
 
