@@ -219,6 +219,9 @@ class Node<V: Comparable<V>>(
         visit(0, callback)
     }
 
+    /**
+     * Preorder depth first traversal
+     */
     fun visit(depth: Int, callback : (Node<V>, Int) -> Unit) {
         callback(this, depth)
 
@@ -230,6 +233,7 @@ class Node<V: Comparable<V>>(
     /**
      * 1 Make a sorted linked list by right-rotations
      * 2 Rotate every second node
+     * https://stackoverflow.com/questions/14001676/balancing-a-bst
      */
     fun doBalance() {
         this.createBackbone()
