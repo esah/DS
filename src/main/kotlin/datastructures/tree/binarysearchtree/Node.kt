@@ -1,6 +1,5 @@
 package datastructures.tree.binarysearchtree
 
-import datastructures.util.printNode
 import kotlin.math.log2
 
 /*
@@ -200,7 +199,15 @@ class Node<V: Comparable<V>>(
     fun getBalancedHeight() = log2(getN().toDouble()).toInt()
 
     fun isBalanced(): Boolean {
-        return getBalancedHeight() == getHeight()
+        var maxHeight = 0
+        var minHeight = Int.MAX_VALUE
+        visit { n, d ->
+            if (n.left == null || n.right == null) {
+                minHeight = minOf(minHeight, d)
+                maxHeight = maxOf(maxHeight, d)
+            }
+        }
+        return maxHeight - minHeight <= 1
     }
 
     fun visit(callback : (Node<V>, Int) -> Unit) {
@@ -212,7 +219,6 @@ class Node<V: Comparable<V>>(
      */
     fun visit(depth: Int, callback : (Node<V>, Int) -> Unit) {
         callback(this, depth)
-
         left?.visit(depth + 1, callback)
         right?.visit(depth + 1, callback)
     }
