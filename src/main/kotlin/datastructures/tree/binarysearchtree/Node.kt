@@ -1,6 +1,7 @@
 package datastructures.tree.binarysearchtree
 
 import kotlin.math.log2
+import kotlin.math.pow
 
 /*
       \              \
@@ -198,6 +199,10 @@ class Node<V: Comparable<V>>(
 
     fun getBalancedHeight() = log2(getN().toDouble()).toInt()
 
+    fun isPerfect() : Boolean {
+        return getN().toDouble() == 2.0.pow(getHeight() + 1) - 1
+    }
+
     fun isBalanced(): Boolean {
         var maxHeight = 0
         var minHeight = Int.MAX_VALUE
@@ -252,7 +257,7 @@ class Node<V: Comparable<V>>(
     // O(n)
     private fun rotateEverySecondNode() {
         var times = getN() / 2
-        while (times > 0) {
+        while (times > 1) {
             var current: Node<V>? = this
             while (current != null) {
                 current.rotateLeft()

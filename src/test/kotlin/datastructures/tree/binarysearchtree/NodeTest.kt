@@ -49,6 +49,7 @@ class NodeTest {
         }
 
         Assert.assertEquals(2, n.getHeight())
+        Assert.assertTrue(n.isPerfect())
         Assert.assertTrue(n.isBalanced())
     }
 
