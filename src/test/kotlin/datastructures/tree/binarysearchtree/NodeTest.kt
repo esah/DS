@@ -170,7 +170,7 @@ class NodeTest {
 
     @Test
     fun rotateEverySecondNode() {
-        for (count in 3..15) {
+        for (count in 3..16) {
             rotateEverySecondNodeN(count)
         }
     }
