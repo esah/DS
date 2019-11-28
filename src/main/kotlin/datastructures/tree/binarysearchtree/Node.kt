@@ -211,6 +211,17 @@ class Node<V: Comparable<V>>(
 
     fun getPerfectN(n: Int) = twoPow(log2(n + 1)) - 1
 
+    // Full portion of a complete tree
+    fun getPerfectN_2(n: Int) : Int {
+        var result = 1
+        while (result <= n) {
+            // Drive one step PAST FULL
+            result = result + result + 1   // next 2^k - 1
+        }
+        return result / 2
+    }
+
+
     fun isBalanced(): Boolean {
         var maxHeight = 0
         var minHeight = Int.MAX_VALUE
