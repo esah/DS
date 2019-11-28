@@ -1,7 +1,7 @@
 package datastructures.tree.binarysearchtree
 
-import kotlin.math.log2
-import kotlin.math.pow
+import datastructures.util.log2
+import datastructures.util.twoPow
 
 /*
       \              \
@@ -128,6 +128,16 @@ class Node<V: Comparable<V>>(
         }
     }
 
+    fun rotateLeftTimes(count: Int) {
+        var current: Node<V>? = this
+        for (i in 0 until count) {
+            if (current != null) {
+                current.rotateLeft()
+                current = current.right
+            }
+        }
+    }
+
     fun rotateRight() {
         if (left != null) {
             rotateRight(this, left!!)
@@ -197,11 +207,9 @@ class Node<V: Comparable<V>>(
         return result
     }
 
-    fun getBalancedHeight() = log2(getN().toDouble()).toInt()
+    fun getBalancedHeight() = log2(getN())
 
-    fun isPerfect() : Boolean {
-        return getN().toDouble() == 2.0.pow(getHeight() + 1) - 1
-    }
+    fun getPerfectN(n: Int) = twoPow(log2(n + 1)) - 1
 
     fun isBalanced(): Boolean {
         var maxHeight = 0
@@ -272,17 +280,18 @@ class Node<V: Comparable<V>>(
         }
     }
 
-    // O(n)
-    private fun rotateEverySecondNode() {
-        var times = getN() / 2
-        while (times > 1) {
-            var current: Node<V>? = this
-            while (current != null) {
-                current.rotateLeft()
-                current = current.right
-            }
-            times /= 2
-        }
-    }
+     // O(n)
+     fun rotateEverySecondNode() {
+         val n = getN()
+         val perfectN = getPerfectN(n)
+         val leftovers = n - perfectN
+         rotateLeftTimes(leftovers)
+
+         var times = perfectN
+         while (times > 1) {
+             times /= 2
+             rotateLeftTimes(times)
+         }
+     }
 
 }

@@ -49,7 +49,6 @@ class NodeTest {
         }
 
         Assert.assertEquals(2, n.getHeight())
-        Assert.assertTrue(n.isPerfect())
         Assert.assertTrue(n.isBalanced())
     }
 
@@ -138,6 +137,45 @@ class NodeTest {
     }
 
     @Test
+    fun perfectN() {
+        val node = Node(0)
+        Assert.assertEquals(1, node.getPerfectN(1))
+        Assert.assertEquals(1, node.getPerfectN(2))
+        Assert.assertEquals(3, node.getPerfectN(3))
+        Assert.assertEquals(3, node.getPerfectN(4))
+        Assert.assertEquals(3, node.getPerfectN(5))
+        Assert.assertEquals(3, node.getPerfectN(6))
+        Assert.assertEquals(7, node.getPerfectN(7))
+        Assert.assertEquals(7, node.getPerfectN(8))
+        Assert.assertEquals(7, node.getPerfectN(9))
+        Assert.assertEquals(7, node.getPerfectN(10))
+        Assert.assertEquals(7, node.getPerfectN(11))
+        Assert.assertEquals(7, node.getPerfectN(14))
+        Assert.assertEquals(15, node.getPerfectN(15))
+        Assert.assertEquals(15, node.getPerfectN(16))
+    }
+
+    private fun rotateEverySecondNodeN(count : Int) {
+        val n = Node(1)
+        for (i in 2..count) {
+            n.insert(i)
+        }
+        Assert.assertEquals("BST $count",count - 1, n.getHeight())
+        n.visit(::printNode)
+        n.rotateEverySecondNode()
+        n.visit(::printNode)
+        Assert.assertTrue("BST $count", n.isBalanced())
+        Assert.assertEquals("BST $count", n.getBalancedHeight(), n.getHeight())
+    }
+
+    @Test
+    fun rotateEverySecondNode() {
+        for (count in 3..15) {
+            rotateEverySecondNodeN(count)
+        }
+    }
+
+    @Test
     fun balance() {
         val n = Node(1)
         for (i in arrayOf(9, 3, 8, 6, 50, 7, 5, 2, 22)) {
@@ -146,11 +184,8 @@ class NodeTest {
         Assert.assertEquals(5, n.getHeight())
         n.doBalance()
         n.visit(::printNode)
-        n.visitBreadthFirst(::printNode)
-
         Assert.assertTrue(n.isBalanced())
         Assert.assertEquals(3, n.getHeight())
-
     }
 
 }
