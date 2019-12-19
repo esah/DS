@@ -72,14 +72,14 @@ class Node<V: Comparable<V>>(
             if (left == null) {
                 left = Node(value)
             } else {
-                left?.insert(value)
+                left!!.insert(value)
             }
         }
         if (key < value) {
             if (right == null) {
                 right = Node(value)
             } else {
-                right?.insert(value)
+                right!!.insert(value)
             }
         }
     }
@@ -294,6 +294,8 @@ class Node<V: Comparable<V>>(
      // O(n)
      fun rotateEverySecondNode() {
          val n = getN()
+         //to generate not just a balanced tree, but also a complete tree, one in which the bottommost tree level is filled from left to right.
+         //The only change is to do a partial pass down the backbone/vine such that the remaining structure has a vine length given (for some integer k) by 2k–1
          val perfectN = getPerfectN(n)
          val leftovers = n - perfectN
          rotateLeftTimes(leftovers)

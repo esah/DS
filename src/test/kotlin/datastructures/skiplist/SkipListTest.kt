@@ -14,6 +14,10 @@ class SkipListTest {
 
         Assert.assertEquals(25, list.find(25)?.value)
         Assert.assertNull(list.find(50))
+
+        list.add(7, 500, 4, 1024, 64, 128)
+        println(list)
+        Assert.assertEquals(1024, list.find(1024)?.value)
     }
 
 }
