@@ -1,5 +1,6 @@
 package datastructures.tree.binarysearchtree
 
+import datastructures.tree.BinaryNode
 import datastructures.tree.rotateLeft
 import datastructures.tree.rotateRight
 import datastructures.util.log2
@@ -10,7 +11,7 @@ class Node<V : Comparable<V>>(
     override var key: V,
     override var left: Node<V>? = null,
     override var right: Node<V>? = null
-) : datastructures.tree.Node<V, Node<V>> {
+) : BinaryNode<V, Node<V>> {
 
     fun isLeaf(): Boolean = left == null && right == null
 

@@ -1,6 +1,6 @@
 package datastructures.tree
 
-interface Node<V: Comparable<V>, N: Node<V, N>> {
+interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     var key: V
     var left: N?
     var right: N?
@@ -14,7 +14,7 @@ interface Node<V: Comparable<V>, N: Node<V, N>> {
    /  \                /  \
   X    Y              Y    Z
 */
-fun <V:Comparable<V>, N: Node<V, N>> rotateRight(par: N, ch:N) {
+fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
     swapKey(par, ch)
 
     val tmpParRight = par.right
@@ -33,7 +33,7 @@ fun <V:Comparable<V>, N: Node<V, N>> rotateRight(par: N, ch:N) {
        /  \      /  \
       X    Y    Z    X
 */
-fun <V:Comparable<V>, N: Node<V, N>> rotateLeft(par: N, ch: N) {
+fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateLeft(par: N, ch: N) {
     swapKey(par, ch)
 
     val tmpParLeft = par.left
@@ -46,7 +46,7 @@ fun <V:Comparable<V>, N: Node<V, N>> rotateLeft(par: N, ch: N) {
 
 }
 
-private fun <V:Comparable<V>, N: Node<V, N>> swapKey(n1: N, n2: N) {
+private fun <V:Comparable<V>, N: BinaryNode<V, N>> swapKey(n1: N, n2: N) {
     val tmpKey = n1.key
     n1.key = n2.key
     n2.key = tmpKey
