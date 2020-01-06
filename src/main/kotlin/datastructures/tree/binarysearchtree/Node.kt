@@ -1,60 +1,16 @@
 package datastructures.tree.binarysearchtree
 
+import datastructures.tree.rotateLeft
+import datastructures.tree.rotateRight
 import datastructures.util.log2
 import datastructures.util.twoPow
 
-/*
-      \              \
-      Par    -->     Ch
-     /  \           /  \
-    Ch   Z         X   Par
-   /  \                /  \
-  X    Y              Y    Z
-*/
-fun <V:Comparable<V>> rotateRight(par: Node<V>, ch: Node<V>) {
-    swapKey(par, ch)
 
-    val tmpParRight = par.right
-    par.left = ch.left
-    par.right = ch
-
-    ch.left = ch.right
-    ch.right = tmpParRight
-}
-
-/*
-      \              \
-      Par    -->     Ch
-     /  \           /  \
-    Z   Ch        Par   Y
-       /  \      /  \
-      X    Y    Z    X
-*/
-fun <V:Comparable<V>> rotateLeft(par: Node<V>, ch: Node<V>) {
-    swapKey(par, ch)
-
-    val tmpParLeft = par.left
-    par.left = ch
-    par.right = ch.right
-
-    val tmpChLeft = ch.left
-    ch.left = tmpParLeft
-    ch.right = tmpChLeft
-
-}
-
-private fun <V:Comparable<V>> swapKey(n1: Node<V>, n2: Node<V>) {
-    val tmpKey = n1.key
-    n1.key = n2.key
-    n2.key = tmpKey
-}
-
-
-class Node<V: Comparable<V>>(
-    var key: V,
-    var left: Node<V>? = null,
-    var right: Node<V>? = null
-) {
+class Node<V : Comparable<V>>(
+    override var key: V,
+    override var left: Node<V>? = null,
+    override var right: Node<V>? = null
+) : datastructures.tree.Node<V, Node<V>> {
 
     fun isLeaf(): Boolean = left == null && right == null
 
@@ -212,7 +168,7 @@ class Node<V: Comparable<V>>(
     fun getPerfectN(n: Int) = twoPow(log2(n + 1)) - 1
 
     // Full portion of a complete tree
-    fun getPerfectN_2(n: Int) : Int {
+    fun getPerfectN_2(n: Int): Int {
         var result = 1
         while (result <= n) {
             // Drive one step PAST FULL
@@ -234,21 +190,21 @@ class Node<V: Comparable<V>>(
         return maxHeight - minHeight <= 1
     }
 
-    fun visit(callback : (Node<V>, Int) -> Unit) {
+    fun visit(callback: (Node<V>, Int) -> Unit) {
         visit(0, callback)
     }
 
     /**
      * Preorder depth first traversal
      */
-    fun visit(depth: Int, callback : (Node<V>, Int) -> Unit) {
+    fun visit(depth: Int, callback: (Node<V>, Int) -> Unit) {
         callback(this, depth)
         left?.visit(depth + 1, callback)
         right?.visit(depth + 1, callback)
     }
 
-    fun visitBreadthFirst(callback : (Node<V>, Int) -> Unit) {
-        for (level in 0 .. getHeight()) {
+    fun visitBreadthFirst(callback: (Node<V>, Int) -> Unit) {
+        for (level in 0..getHeight()) {
             visitBreadthFirst(level, 0, callback)
         }
     }
@@ -256,7 +212,7 @@ class Node<V: Comparable<V>>(
     /**
      * Breadth First Level Order Traversal
      */
-    private fun visitBreadthFirst(level: Int, depth: Int, callback : (Node<V>, Int) -> Unit) {
+    private fun visitBreadthFirst(level: Int, depth: Int, callback: (Node<V>, Int) -> Unit) {
         if (level == 0) {
             callback(this, depth)
         } else if (level > 0) {

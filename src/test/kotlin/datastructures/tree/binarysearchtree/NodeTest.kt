@@ -1,5 +1,7 @@
 package datastructures.tree.binarysearchtree
 
+import datastructures.tree.rotateLeft
+import datastructures.tree.rotateRight
 import datastructures.util.printNode
 import org.junit.Assert
 import org.junit.Test
