@@ -1,8 +1,6 @@
 package datastructures.tree.binarysearchtree
 
 import datastructures.tree.BinaryNode
-import datastructures.tree.rotateLeft
-import datastructures.tree.rotateRight
 import datastructures.util.log2
 import datastructures.util.twoPow
 
@@ -78,29 +76,6 @@ class Node<V : Comparable<V>>(
             node.left = leftNode.left
         }
     }
-
-    fun rotateLeft() {
-        if (right != null) {
-            rotateLeft(this, right!!)
-        }
-    }
-
-    fun rotateLeftTimes(count: Int) {
-        var current: Node<V>? = this
-        for (i in 0 until count) {
-            if (current != null) {
-                current.rotateLeft()
-                current = current.right
-            }
-        }
-    }
-
-    fun rotateRight() {
-        if (left != null) {
-            rotateRight(this, left!!)
-        }
-    }
-
 
     private fun getParentOfMax(n: Node<V>): Node<V> {
         if (n.right == null || n.right!!.right == null) {

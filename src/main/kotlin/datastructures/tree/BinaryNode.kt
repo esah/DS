@@ -4,6 +4,28 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     var key: V
     var left: N?
     var right: N?
+
+    fun rotateLeft() {
+        if (right != null) {
+            rotateLeft(this as N, right!!)
+        }
+    }
+
+    fun rotateLeftTimes(count: Int) {
+        var current: BinaryNode<V, N>? = this
+        for (i in 0 until count) {
+            if (current != null) {
+                current.rotateLeft()
+                current = current.right
+            }
+        }
+    }
+
+    fun rotateRight() {
+        if (left != null) {
+            rotateRight(this as N, left!!)
+        }
+    }
 }
 
 /*
@@ -14,7 +36,7 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
    /  \                /  \
   X    Y              Y    Z
 */
-fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
+private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
     swapKey(par, ch)
 
     val tmpParRight = par.right
@@ -33,7 +55,7 @@ fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
        /  \      /  \
       X    Y    Z    X
 */
-fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateLeft(par: N, ch: N) {
+private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateLeft(par: N, ch: N) {
     swapKey(par, ch)
 
     val tmpParLeft = par.left

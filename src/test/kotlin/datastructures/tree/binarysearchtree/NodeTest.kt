@@ -1,7 +1,5 @@
 package datastructures.tree.binarysearchtree
 
-import datastructures.tree.rotateLeft
-import datastructures.tree.rotateRight
 import datastructures.util.printNode
 import org.junit.Assert
 import org.junit.Test
@@ -80,7 +78,8 @@ class NodeTest {
         println("Original: ")
         n.visit(::printNode)
 
-        rotateLeft(n, n.right!!)
+        n.rotateLeft()
+
 
         println("Rotated: ")
         n.visit(::printNode)
@@ -104,7 +103,7 @@ class NodeTest {
         println("Original: ")
         n.visit(::printNode)
 
-        rotateRight(n, n.left!!)
+        n.rotateRight()
 
         println("Rotated: ")
         n.visit(::printNode)
