@@ -11,9 +11,6 @@ class Node<V : Comparable<V>>(
     override var right: Node<V>? = null
 ) : BinaryNode<V, Node<V>> {
 
-    fun isLeaf(): Boolean = left == null && right == null
-
-
     fun find(value: V): Node<V>? = scan(value, null)?.first
 
     fun scan(value: V, parent: Node<V>?): Pair<Node<V>, Node<V>?>? = when {
@@ -23,6 +20,10 @@ class Node<V : Comparable<V>>(
     }
 
     fun insert(value: V) {
+        insertNonRecursive(value)
+    }
+
+    fun insertRecursive(value: V) {
         if (key > value) {
             if (left == null) {
                 left = Node(value)
@@ -35,6 +36,26 @@ class Node<V : Comparable<V>>(
                 right = Node(value)
             } else {
                 right!!.insert(value)
+            }
+        }
+    }
+
+    fun insertNonRecursive(value: V) {
+        var node: Node<V> = this
+        while (true) {
+            if (node.key > value) {
+                if (node.left == null) {
+                    node.left = Node(value)
+                    break
+                }
+                node = node.left as Node<V>
+            }
+            if (node.key <= value) {
+                if (node.right == null) {
+                    node.right = Node(value)
+                    break
+                }
+                node = node.right as Node<V>
             }
         }
     }
@@ -120,18 +141,6 @@ class Node<V : Comparable<V>>(
         }
     }
 
-    /*
-    * Time complexity: O(n)
-     */
-    fun getHeight(): Int {
-        var height = 0
-        visit { n, d ->
-            if (n.isLeaf()) {
-                height = maxOf(height, d)
-            }
-        }
-        return height
-    }
 
     fun getN(): Int {
         var result = 0
@@ -165,38 +174,6 @@ class Node<V : Comparable<V>>(
         }
         return maxHeight - minHeight <= 1
     }
-
-    fun visit(callback: (Node<V>, Int) -> Unit) {
-        visit(0, callback)
-    }
-
-    /**
-     * Preorder depth first traversal
-     */
-    fun visit(depth: Int, callback: (Node<V>, Int) -> Unit) {
-        callback(this, depth)
-        left?.visit(depth + 1, callback)
-        right?.visit(depth + 1, callback)
-    }
-
-    fun visitBreadthFirst(callback: (Node<V>, Int) -> Unit) {
-        for (level in 0..getHeight()) {
-            visitBreadthFirst(level, 0, callback)
-        }
-    }
-
-    /**
-     * Breadth First Level Order Traversal
-     */
-    private fun visitBreadthFirst(level: Int, depth: Int, callback: (Node<V>, Int) -> Unit) {
-        if (level == 0) {
-            callback(this, depth)
-        } else if (level > 0) {
-            left?.visitBreadthFirst(level - 1, depth + 1, callback)
-            right?.visitBreadthFirst(level - 1, depth + 1, callback)
-        }
-    }
-
 
     /**
      * 1 Make a sorted linked list by right-rotations
