@@ -13,13 +13,20 @@ enum class Color { RED, BLACK }
 4 Depth Property - Every path root->leaf has the same BLACK nodes (black-depth)
 */
 //AVL: more rotations during modification
+
+fun <V : Comparable<V>> newTree(key: V, vararg keys: V): Node<V> =
+    Node(key, BLACK).apply { keys.forEach { this.insert(it) } }
+
+
 class Node<V : Comparable<V>>(
     override var key: V,
-    left: Node<V>?,
-    right: Node<V>?,
+    left: Node<V>? = null,
+    right: Node<V>? = null,
     var parent: Node<V>? = null,
     var color: Color = RED
 ): BinaryNode<V, Node<V>>  {
+    constructor(key: V, color: Color) : this(key, null, null, null, color)
+
     override var right = right
         set(v) {
             field = v
@@ -31,12 +38,15 @@ class Node<V : Comparable<V>>(
             field?.parent = this
         }
 
+    val grandParent: Node<V>?
+        get() = parent?.parent
 
     fun insert(value: V) {
-        insert(Node(value, null, null))
+        insert(Node(value))
     }
 
     fun insert(n: Node<V>) {
+        //TODO also Top-Down insertion https://www.geeksforgeeks.org/red-black-trees-top-down-insertion/
         if (n.key > key) {
             if (right != null) {
                 right!!.insert(n)
@@ -45,7 +55,7 @@ class Node<V : Comparable<V>>(
                 right = n
                 n.parent = this
                 n.color = RED
-                n.insertBalance()
+                n.insertingBalance()
             }
         } else if (n.key < key) {
             if (left != null) {
@@ -54,66 +64,65 @@ class Node<V : Comparable<V>>(
                 left = n
                 n.parent = this
                 n.color = RED
-                n.insertBalance()
+                n.insertingBalance()
             }
         }
     }
 
-    //recoloring if not then rotation
-    private fun insertBalance() {
+    private fun setRootBlack() {
         if (parent == null) {
             color = BLACK
-            return
+        } else {
+            parent?.setRootBlack()
         }
-        var node = this
-        while (node.parent != null && node.parent?.parent != null && node.parent!!.color == RED) {
-            val parent = node.parent!!
-            val grandParent = node.parent!!.parent!!
+    }
+
+    //recoloring if not then rotation
+    private fun insertingBalance() {
+        var node : Node<V>? = this
+
+        while (node?.parent?.color == RED) {
             val uncle: Node<V>?
 
-            if (grandParent.left == node.parent) {
-                uncle = grandParent.right
+            if (node.grandParent?.left == node.parent) {
+                uncle = node.grandParent?.right
+
                 if (uncle?.color == RED) { // Case 1
                     uncle.color = BLACK
-                    parent.color = BLACK
-                    grandParent.color = RED
-                    node = grandParent
-                } else {
-                    if (parent.right == node) { // Case 2
-                        node = parent
-                        node.rotateLeft()
-                    }
-                    //Case 3
                     node.parent?.color = BLACK
-                    node.parent?.parent?.color = RED
-                    node.parent?.parent?.rotateRight()
+                    node.grandParent?.color = RED
+                    node = node.grandParent
+                } else {
+                    if (node.parent?.right == node) { // Case 2
+                        node = node.parent
+                        node?.rotateLeft()
+                    }
+                    node?.parent?.color = BLACK
+                    node?.grandParent?.color = RED
+                    node?.grandParent?.rotateRight()
                 }
 
             } else { // Case 4
-                uncle = grandParent.left
+                uncle = node.grandParent?.left
 
                 if (uncle?.color == RED) {
                     uncle.color = BLACK
-                    parent.color = BLACK
-                    grandParent.color = RED
-                    node = grandParent
-                } else {
-                    if (parent.left == node) {
-                        node = parent
-                        node.rotateRight()
-                    }
                     node.parent?.color = BLACK
-                    node.parent?.parent?.color = RED
-                    node.parent?.parent?.rotateLeft()
+                    node.grandParent?.color = RED
+                    node = node.grandParent
+                } else {
+                    if (node.parent?.left == node) {
+                        node = node.parent
+                        node?.rotateRight()
+                    }
+                    node?.parent?.color = BLACK
+                    node?.grandParent?.color = RED
+                    node?.grandParent?.rotateLeft()
                 }
             }
         }
-        //set root BLACK
-        if (node.parent == null) {
-            node.color = BLACK
-        } else if (node.parent?.parent == null) {
-            node.parent?.color = BLACK
-        }
+
+        node?.setRootBlack()
     }
 
 }
