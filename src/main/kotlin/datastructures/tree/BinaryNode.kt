@@ -74,6 +74,14 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         return height
     }
 
+    fun find(value: V): N? = scan(value, null)?.first
+
+    fun scan(value: V, parent: N?): Pair<N, N?>? = when {
+        key > value -> left?.scan(value, this as N)
+        key < value -> right?.scan(value, this as N)
+        else -> Pair(this as N, parent)
+    }
+
 
 }
 

@@ -11,14 +11,6 @@ class Node<V : Comparable<V>>(
     override var right: Node<V>? = null
 ) : BinaryNode<V, Node<V>> {
 
-    fun find(value: V): Node<V>? = scan(value, null)?.first
-
-    fun scan(value: V, parent: Node<V>?): Pair<Node<V>, Node<V>?>? = when {
-        key > value -> left?.scan(value, this)
-        key < value -> right?.scan(value, this)
-        else -> Pair(this, parent)
-    }
-
     fun insert(value: V) {
         insertNonRecursive(value)
     }
