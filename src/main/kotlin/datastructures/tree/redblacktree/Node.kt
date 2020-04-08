@@ -25,7 +25,8 @@ class Node<V : Comparable<V>>(
     var parent: Node<V>? = null,
     var color: Color = RED
 ): BinaryNode<V, Node<V>>  {
-    constructor(key: V, color: Color) : this(key, null, null, null, color)
+    constructor(key: V, color: Color, parent: Node<V>?) : this(key, null, null, parent, color)
+    constructor(key: V, color: Color) : this(key, color, null)
 
     override var right = right
         set(v) {
@@ -44,6 +45,8 @@ class Node<V : Comparable<V>>(
     fun insert(value: V) {
         insert(Node(value))
     }
+
+
 
     fun insert(n: Node<V>) {
         //TODO also Top-Down insertion https://www.geeksforgeeks.org/red-black-trees-top-down-insertion/
@@ -92,37 +95,66 @@ class Node<V : Comparable<V>>(
                     node.parent?.color = BLACK
                     node.grandParent?.color = RED
                     node = node.grandParent
-                } else {
-                    if (node.parent?.right == node) { // Case 2
-                        node = node.parent
-                        node?.rotateLeft()
-                    }
-                    node?.parent?.color = BLACK
-                    node?.grandParent?.color = RED
-                    node?.grandParent?.rotateRight()
+                    continue
                 }
 
-            } else { // Case 4
+                if (node.parent?.right == node) { // Case Left Right
+                    node.parent?.rotateLeft()
+                }
+                // Case Left Left
+                node.grandParent?.rotateRight()
+                node = node.parent
+                node?.color = BLACK
+                node?.right?.color = RED
+
+            } else {
                 uncle = node.grandParent?.left
 
-                if (uncle?.color == RED) {
+                if (uncle?.color == RED) { // Case 1
                     uncle.color = BLACK
                     node.parent?.color = BLACK
                     node.grandParent?.color = RED
                     node = node.grandParent
-                } else {
-                    if (node.parent?.left == node) {
-                        node = node.parent
-                        node?.rotateRight()
-                    }
-                    node?.parent?.color = BLACK
-                    node?.grandParent?.color = RED
-                    node?.grandParent?.rotateLeft()
+                    continue
                 }
+
+                if (node.parent?.left == node) { // Right Left Case
+                    node.parent?.rotateRight()
+                }
+                // Right Right Case
+                node.grandParent?.rotateLeft()
+                node = node.parent
+                node?.color = BLACK
+                node?.left?.color = RED
             }
         }
 
         node?.setRootBlack()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Node<*>
+
+        if (key != other.key) return false
+        if (parent != other.parent) return false
+        if (color != other.color) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + (parent?.hashCode() ?: 0)
+        result = 31 * result + color.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "Node(key=$key, parent=$parent, color=$color)"
+    }
+
 
 }
