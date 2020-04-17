@@ -32,7 +32,7 @@ class NodeTest {
     @Test
     fun newTree() {
         val root = newTree(10, 1, 5, 7, 21, 50, 11, 51, 9, 4, 3)
-        root.visit(::printNode) //todo FIX color
+        root.visit(::printNode)
     }
 
     @Test
@@ -42,18 +42,21 @@ class NodeTest {
         Assert.assertEquals(n, Node(10, Color.BLACK))
         Assert.assertEquals(n.left, Node(5, Color.RED, n))
         Assert.assertEquals(n.right, Node(15, Color.RED, n))
+
         n.rotateRight()
-        Assert.assertEquals(n, Node(5, Color.BLACK)) //TODO color changed!
+        Assert.assertEquals(n, Node(5, Color.RED))
         Assert.assertEquals(n.left, null)
-        Assert.assertEquals(n.right, Node(10, Color.RED, n))
+        Assert.assertEquals(n.right, Node(10, Color.BLACK, n))
         Assert.assertEquals(n.right?.right, Node(15, Color.RED, n.right))
+
         n.rotateLeft()
         Assert.assertEquals(n, Node(10, Color.BLACK))
         Assert.assertEquals(n.left, Node(5, Color.RED, n))
         Assert.assertEquals(n.right, Node(15, Color.RED, n))
+
         n.rotateLeft()
-        Assert.assertEquals(n, Node(15, Color.BLACK))
-        Assert.assertEquals(n.left, Node(10, Color.RED, n))
+        Assert.assertEquals(n, Node(15, Color.RED))
+        Assert.assertEquals(n.left, Node(10, Color.BLACK, n))
         Assert.assertEquals(n.left?.left, Node(5, Color.RED, n.left))
 
     }

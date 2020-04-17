@@ -42,6 +42,14 @@ class Node<V : Comparable<V>>(
     val grandParent: Node<V>?
         get() = parent?.parent
 
+
+    override fun swapWith(n: Node<V>) {
+        super.swapWith(n)
+        val tmpColor = this.color
+        this.color = n.color
+        n.color = tmpColor
+    }
+
     fun insert(value: V) {
         insert(Node(value))
     }
@@ -98,10 +106,10 @@ class Node<V : Comparable<V>>(
                     continue
                 }
 
-                if (node.parent?.right == node) { // Case Left Right
+                if (node.parent?.right == node) { // Left Right
                     node.parent?.rotateLeft()
                 }
-                // Case Left Left
+                // Left Left
                 node.grandParent?.rotateRight()
                 node = node.parent
                 node?.color = BLACK
@@ -118,10 +126,10 @@ class Node<V : Comparable<V>>(
                     continue
                 }
 
-                if (node.parent?.left == node) { // Right Left Case
+                if (node.parent?.left == node) { // Right Left
                     node.parent?.rotateRight()
                 }
-                // Right Right Case
+                // Right Right
                 node.grandParent?.rotateLeft()
                 node = node.parent
                 node?.color = BLACK

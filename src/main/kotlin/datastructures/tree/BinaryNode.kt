@@ -82,6 +82,11 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         else -> Pair(this as N, parent)
     }
 
+    fun swapWith(n: N) {
+        val tmpKey = key
+        key = n.key
+        n.key = tmpKey
+    }
 
 }
 
@@ -94,7 +99,7 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
   X    Y              Y    Z
 */
 private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
-    swapKey(par, ch)
+    par.swapWith(ch)
     val tmpParRight = par.right // Z
     par.left = ch.left // X
     par.right = ch // New Par
@@ -112,7 +117,7 @@ private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateRight(par: N, ch:N) {
       X    Y    Z    X
 */
 private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateLeft(par: N, ch: N) {
-    swapKey(par, ch)
+    par.swapWith(ch)
 
     val tmpParLeft = par.left // Z
     par.left = ch // New Par
@@ -122,10 +127,4 @@ private fun <V:Comparable<V>, N: BinaryNode<V, N>> rotateLeft(par: N, ch: N) {
     ch.left = tmpParLeft  // Z
     ch.right = tmpChLeft // X
 
-}
-
-private fun <V:Comparable<V>, N: BinaryNode<V, N>> swapKey(n1: N, n2: N) {
-    val tmpKey = n1.key
-    n1.key = n2.key
-    n2.key = tmpKey
 }
