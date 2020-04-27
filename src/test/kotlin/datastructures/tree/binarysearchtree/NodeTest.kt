@@ -197,6 +197,7 @@ class NodeTest {
         n.visit(::printNode)
         Assert.assertTrue(n.isBalanced())
         Assert.assertEquals(3, n.getHeight())
+        Assert.assertEquals(3, n.getHeightForBalancedTree())
     }
 
 }

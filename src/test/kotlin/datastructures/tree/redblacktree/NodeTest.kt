@@ -36,7 +36,7 @@ class NodeTest {
     }
 
     @Test
-    fun rotateWithParentLinkKept() {
+    fun rotateWithParentLinkKeptAndColor() {
         val n = newTree(10, 5, 15)
 
         Assert.assertEquals(n, Node(10, Color.BLACK))

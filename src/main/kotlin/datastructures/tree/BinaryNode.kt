@@ -36,6 +36,12 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
 
     /**
      * Pre-order depth first traversal
+     *
+     * Another depth first traversals:
+     *  Inorder:    Left - Root  - Right
+     *  Pre-order:  Root - Left  - Right
+     *  Post-order: Left - Right - Root
+     *  O(n)
      */
     fun visit(depth: Int, callback: (BinaryNode<V, N>, Int) -> Unit) {
         callback(this, depth)
@@ -50,7 +56,8 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     }
 
     /**
-     * Breadth First Level Order Traversal
+     * Breadth First Level Order Traversal = Level Order Traversal
+     * O(n)
      */
     private fun visitBreadthFirst(level: Int, depth: Int, callback: (BinaryNode<V, N>, Int) -> Unit) {
         if (level == 0) {
@@ -61,10 +68,14 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         }
     }
 
-        /*
+    fun getHeight(): Int {
+        return height(this as N) - 1
+    }
+
+    /*
     * Time complexity: O(n)
      */
-    fun getHeight(): Int {
+    fun getHeight2(): Int {
         var height = 0
         visit { n, d ->
             if (n.isLeaf()) {
@@ -72,6 +83,13 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
             }
         }
         return height
+    }
+
+    /**
+     * O(log n) for balanced tree
+     */
+    fun getHeightForBalancedTree(): Int {
+        return balHeight(this as N) - 1
     }
 
     fun find(value: V): N? = scan(value, null)?.first
@@ -89,6 +107,12 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     }
 
 }
+
+fun <V : Comparable<V>, N : BinaryNode<V, N>> height(n: N?): Int =
+    if (n == null) 0 else 1 + maxOf(height(n.left), height(n.right))
+
+fun <V : Comparable<V>, N : BinaryNode<V, N>> balHeight(n: N?): Int =
+    if (n == null) 0 else 1 + balHeight(n.left)
 
 /*
       \              \
