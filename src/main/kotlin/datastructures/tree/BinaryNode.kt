@@ -29,11 +29,7 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         }
     }
 
-
-    fun visit(callback: (BinaryNode<V, N>, Int) -> Unit) {
-        visit(0, callback)
-    }
-
+    fun visit(callback: (BinaryNode<V, N>, Int) -> Unit) = visit(0, callback)
     /**
      * Pre-order depth first traversal
      *
@@ -46,6 +42,13 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     fun visit(depth: Int, callback: (BinaryNode<V, N>, Int) -> Unit) {
         callback(this, depth)
         left?.visit(depth + 1, callback)
+        right?.visit(depth + 1, callback)
+    }
+
+    fun inOrderVisit(callback: (BinaryNode<V, N>, Int) -> Unit) = inOrderVisit(0, callback)
+    fun inOrderVisit(depth: Int, callback: (BinaryNode<V, N>, Int) -> Unit) {
+        left?.visit(depth + 1, callback)
+        callback(this, depth)
         right?.visit(depth + 1, callback)
     }
 
@@ -97,6 +100,14 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     fun scan(value: V, parent: N?): Pair<N, N?>? = when {
         key > value -> left?.scan(value, this as N)
         key < value -> right?.scan(value, this as N)
+        else -> Pair(this as N, parent)
+    }
+
+    fun findNear(value: V): N = scanNear(value, null).first
+
+    fun scanNear(value: V, parent: N?): Pair<N, N?> = when {
+        key > value -> left?.scan(value, this as N) ?: Pair(this as N, parent)
+        key < value -> right?.scan(value, this as N) ?: Pair(this as N, parent)
         else -> Pair(this as N, parent)
     }
 

@@ -35,6 +35,28 @@ class NodeTest {
     }
 
     @Test
+    fun predecessorAndSuccessor() {
+        val n = Node(10)
+        for (i in arrayOf(1, 5, 7, 21, 50, 11, 51, 9, 4, 3)) {
+            n.insert(i)
+        }
+        n.visit(::printNode)
+        n.predecessorAndSuccessor(8).let {
+            Assert.assertEquals(7, it.first.key)
+            Assert.assertEquals(9, it.second.key)
+        }
+        n.predecessorAndSuccessor(9).let {
+            Assert.assertEquals(7, it.first.key)
+            Assert.assertEquals(10, it.second.key)
+        }
+
+        Assert.assertEquals(9, n.predecessor()?.key)
+        Assert.assertEquals(11, n.successor()?.key)
+        Assert.assertEquals(null, n.find(9)!!.predecessor()?.key)
+        Assert.assertEquals(null, n.find(9)!!.successor()?.key)
+    }
+
+    @Test
     fun height() {
         var n = Node(1)
         for (i in arrayOf(2, 3, 4, 5, 6, 7)) {

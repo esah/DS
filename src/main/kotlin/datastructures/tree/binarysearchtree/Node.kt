@@ -52,20 +52,40 @@ class Node<V : Comparable<V>>(
         }
     }
 
+    fun predecessorAndSuccessor(v: V): Pair<Node<V>, Node<V>> {
+        var p: Node<V>? = null
+        var s: Node<V>? = null
+        inOrderVisit { n, _ ->
+            if (n.key < v) {
+                if (p == null || p!!.key < n.key) {
+                    p = n as Node<V>
+                }
+            }
+            if (n.key > v) {
+                if (s == null || s!!.key > n.key) {
+                    s = n as Node<V>
+                }
+            }
+        }
+        return Pair(p!!, s!!)
+    }
+
+    fun predecessor(): Node<V>? = left?.max()
+    fun successor(): Node<V>? = right?.min()
+
+
     fun delete(value: V) {
-        val (found, parent) = scan(value, null) ?: return
+        val (n, parent) = scan(value, null) ?: return
 
-        if (found.isLeaf()) {
-            removeLeaf(parent, found)
+        if (n.isLeaf()) {
+            removeLeaf(parent, n)
             return
         }
-
-        if (found.left != null && found.right != null) {
-            removeTwoChildNode(found)
+        if (n.left != null && n.right != null) {
+            removeTwoChildNode(n)
             return
         }
-
-        removeSingleChildNode(found)
+        removeSingleChildNode(n)
     }
 
     private fun removeTwoChildNode(node: Node<V>) {
@@ -73,12 +93,13 @@ class Node<V : Comparable<V>>(
         //        5      20
         //     2    7   15 25
         //    1 3  6
+        //       4
 
         val leftNode = node.left!!
 
         leftNode.right?.let {
-            val maxParent = getParentOfMax(leftNode)
-            val max = maxParent.right
+            val maxParent = getParentOfMax(leftNode) //3
+            val max = maxParent.right //4
             max?.let {
                 maxParent.right = it.left
                 node.key = it.key
@@ -91,10 +112,9 @@ class Node<V : Comparable<V>>(
     }
 
     private fun getParentOfMax(n: Node<V>): Node<V> {
-        if (n.right == null || n.right!!.right == null) {
-            return n
-        }
-        return getParentOfMax(n.right!!)
+        return if (n.right == null || n.right!!.right == null) {
+            n
+        } else getParentOfMax(n.right!!)
     }
 
     private fun removeSingleChildNode(node: Node<V>) {
@@ -104,15 +124,15 @@ class Node<V : Comparable<V>>(
         node.right = aLeaf.right
     }
 
-    private fun removeLeaf(node: Node<V>?, leaf: Node<V>) {
-        if (node == null) {
+    private fun removeLeaf(parent: Node<V>?, leaf: Node<V>) {
+        if (parent == null) {
             throw IllegalStateException("Can not remove the root node without child nodes")
         }
-        if (node.left == leaf) {
-            node.left = null
+        if (parent.left == leaf) {
+            parent.left = null
         }
-        if (node.right == leaf) {
-            node.right = null
+        if (parent.right == leaf) {
+            parent.right = null
         }
     }
 
@@ -124,7 +144,7 @@ class Node<V : Comparable<V>>(
     }
 
     /*
-    * Time complexity: log(n)
+    * Time complexity: log(n) for balanced tree
      */
     fun min(): Node<V> {
         return when (left) {
@@ -207,5 +227,9 @@ class Node<V : Comparable<V>>(
              rotateLeftTimes(times)
          }
      }
+
+    override fun toString(): String {
+        return "N($key)"
+    }
 
 }
