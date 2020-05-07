@@ -13,7 +13,7 @@ enum class Color { RED, BLACK }
 4 Depth Property - Every path root->leaf has the same BLACK nodes (black-depth)
 */
 //AVL: more rotations during modification
-
+//@see https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
 fun <V : Comparable<V>> newTree(key: V, vararg keys: V): Node<V> =
     Node(key, BLACK).apply { keys.forEach { this.insert(it) } }
 
@@ -39,22 +39,30 @@ class Node<V : Comparable<V>>(
             field?.parent = this
         }
 
-    val grandParent: Node<V>?
+    val grandParent
         get() = parent?.parent
+    val uncle
+        get() = if (parent == grandParent?.left) grandParent?.right else grandParent?.left
+    val isRight : Boolean
+        get() = parent?.right == this
+    val isLeft : Boolean
+        get() = parent?.left == this
 
 
-    override fun swapWith(n: Node<V>) {
-        super.swapWith(n)
+    fun swapColors(n: Node<V>) {
         val tmpColor = this.color
         this.color = n.color
         n.color = tmpColor
     }
 
+    override fun swapWith(n: Node<V>) {
+        super.swapWith(n)
+        swapColors(n)
+    }
+
     fun insert(value: V) {
         insert(Node(value))
     }
-
-
 
     fun insert(n: Node<V>) {
         //TODO also Top-Down insertion https://www.geeksforgeeks.org/red-black-trees-top-down-insertion/
@@ -93,20 +101,18 @@ class Node<V : Comparable<V>>(
         var node : Node<V>? = this
 
         while (node?.parent?.color == RED) {
-            val uncle: Node<V>?
 
-            if (node.grandParent?.left == node.parent) {
-                uncle = node.grandParent?.right
+            val uncle = node.uncle
+            if (uncle?.color == RED) { // Case 1
+                uncle.color = BLACK
+                node.parent?.color = BLACK
+                node.grandParent?.color = RED
+                node = node.grandParent
+                continue
+            }
 
-                if (uncle?.color == RED) { // Case 1
-                    uncle.color = BLACK
-                    node.parent?.color = BLACK
-                    node.grandParent?.color = RED
-                    node = node.grandParent
-                    continue
-                }
-
-                if (node.parent?.right == node) { // Left Right
+            if (node.parent!!.isLeft) {
+                if (node.isRight) { // Left Right
                     node.parent?.rotateLeft()
                 }
                 // Left Left
@@ -116,17 +122,7 @@ class Node<V : Comparable<V>>(
                 node?.right?.color = RED
 
             } else {
-                uncle = node.grandParent?.left
-
-                if (uncle?.color == RED) { // Case 1
-                    uncle.color = BLACK
-                    node.parent?.color = BLACK
-                    node.grandParent?.color = RED
-                    node = node.grandParent
-                    continue
-                }
-
-                if (node.parent?.left == node) { // Right Left
+                if (node.isLeft) { // Right Left
                     node.parent?.rotateRight()
                 }
                 // Right Right
@@ -136,7 +132,6 @@ class Node<V : Comparable<V>>(
                 node?.left?.color = RED
             }
         }
-
         node?.setRootBlack()
     }
 
