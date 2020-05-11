@@ -106,8 +106,8 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     fun findNear(value: V): N = scanNear(value, null).first
 
     fun scanNear(value: V, parent: N?): Pair<N, N?> = when {
-        key > value -> left?.scan(value, this as N) ?: Pair(this as N, parent)
-        key < value -> right?.scan(value, this as N) ?: Pair(this as N, parent)
+        key > value -> left?.scan(value, this as N) ?: this as N to parent
+        key < value -> right?.scan(value, this as N) ?: this as N to parent
         else -> Pair(this as N, parent)
     }
 
@@ -117,6 +117,29 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         n.key = tmpKey
     }
 
+    fun predecessor(): N? = left?.max()
+    fun successor(): N? = right?.min()
+
+    fun max(): N {
+        val p = maxParent()
+        return p.right ?: p
+    }
+    fun maxParent(parent: N? = null): N {
+        return when (right) {
+            null -> parent ?: this as N
+            else -> right!!.maxParent(this as N)
+        }
+    }
+
+    /*
+    * Time complexity: log(n) for balanced tree
+     */
+    fun min(): N {
+        return when (left) {
+            null -> this as N
+            else -> left!!.min()
+        }
+    }
 }
 
 fun <V : Comparable<V>, N : BinaryNode<V, N>> height(n: N?): Int =

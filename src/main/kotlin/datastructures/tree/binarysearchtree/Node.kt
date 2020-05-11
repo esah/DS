@@ -70,10 +70,6 @@ class Node<V : Comparable<V>>(
         return Pair(p!!, s!!)
     }
 
-    fun predecessor(): Node<V>? = left?.max()
-    fun successor(): Node<V>? = right?.min()
-
-
     fun delete(value: V) {
         val (n, parent) = scan(value, null) ?: return
 
@@ -98,7 +94,7 @@ class Node<V : Comparable<V>>(
         val leftNode = node.left!!
 
         leftNode.right?.let {
-            val maxParent = getParentOfMax(leftNode) //3
+            val maxParent = leftNode.maxParent() //3
             val max = maxParent.right //4
             max?.let {
                 maxParent.right = it.left
@@ -109,12 +105,6 @@ class Node<V : Comparable<V>>(
             node.key = leftNode.key
             node.left = leftNode.left
         }
-    }
-
-    private fun getParentOfMax(n: Node<V>): Node<V> {
-        return if (n.right == null || n.right!!.right == null) {
-            n
-        } else getParentOfMax(n.right!!)
     }
 
     private fun removeSingleChildNode(node: Node<V>) {
@@ -135,24 +125,6 @@ class Node<V : Comparable<V>>(
             parent.right = null
         }
     }
-
-    fun max(): Node<V> {
-        return when (right) {
-            null -> this
-            else -> right!!.max()
-        }
-    }
-
-    /*
-    * Time complexity: log(n) for balanced tree
-     */
-    fun min(): Node<V> {
-        return when (left) {
-            null -> this
-            else -> left!!.min()
-        }
-    }
-
 
     fun getN(): Int {
         var result = 0
