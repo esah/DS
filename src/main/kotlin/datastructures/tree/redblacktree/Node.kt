@@ -135,6 +135,50 @@ class Node<V : Comparable<V>>(
         node?.setRootBlack()
     }
 
+    fun delete(v: V) {
+        val n = scan(v, null) ?: return
+        delete(n.first)
+    }
+
+    fun delete(n: Node<V>) {
+        var originColor = n.color
+        //no child
+        if (n.isLeaf()) { //?
+            if (n.isLeft) {
+                n.parent?.left = null
+            } else {
+                n.parent?.right = null
+            }
+            if (originColor == BLACK) n.parent?.deletingBalance()
+            return
+        }
+        //single child
+        if (n.left == null || n.right == null) {
+            val x = n.right ?: n.left
+            if (x != null) {
+                n.swapWith(x)
+                n.left = x.left
+                n.right = x.right
+            }
+            if (originColor == BLACK) n.deletingBalance()
+            return
+        }
+        //double child
+        val successor = n.right?.successor()!!
+        originColor = successor.color
+        n.swapWith(successor)
+        if (successor.parent == n) {
+            n.right = successor.right
+        } else if (successor.right != null) {
+            successor.parent?.left = successor.right
+        }
+        if (originColor == BLACK) n.deletingBalance()
+    }
+
+    private fun deletingBalance() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
