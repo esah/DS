@@ -43,6 +43,12 @@ class Node<V : Comparable<V>>(
         get() = parent?.parent
     val uncle
         get() = if (parent == grandParent?.left) grandParent?.right else grandParent?.left
+    val brother
+        get() = if (isRight) parent?.left else parent?.right
+    val root
+        get() = parent == null
+    val orphan
+        get() = parent != null && !isRight && !isLeft
     val isRight : Boolean
         get() = parent?.right == this
     val isLeft : Boolean
@@ -64,8 +70,8 @@ class Node<V : Comparable<V>>(
         insert(Node(value))
     }
 
+    //TODO also see Top-Down insertion https://www.geeksforgeeks.org/red-black-trees-top-down-insertion/
     fun insert(n: Node<V>) {
-        //TODO also Top-Down insertion https://www.geeksforgeeks.org/red-black-trees-top-down-insertion/
         if (n.key > key) {
             if (right != null) {
                 right!!.insert(n)
@@ -74,7 +80,7 @@ class Node<V : Comparable<V>>(
                 right = n
                 n.parent = this
                 n.color = RED
-                n.insertingBalance()
+                n.removeDoubleReds()
             }
         } else if (n.key < key) {
             if (left != null) {
@@ -83,7 +89,7 @@ class Node<V : Comparable<V>>(
                 left = n
                 n.parent = this
                 n.color = RED
-                n.insertingBalance()
+                n.removeDoubleReds()
             }
         }
     }
@@ -96,8 +102,7 @@ class Node<V : Comparable<V>>(
         }
     }
 
-    //recoloring if not then rotation
-    private fun insertingBalance() {
+    private fun removeDoubleReds() {
         var node : Node<V>? = this
 
         while (node?.parent?.color == RED) {
@@ -135,10 +140,7 @@ class Node<V : Comparable<V>>(
         node?.setRootBlack()
     }
 
-    fun delete(v: V) {
-        val n = scan(v, null) ?: return
-        delete(n.first)
-    }
+    fun delete(v: V) = scan(v, null)?.first?.let { delete(it) }
 
     fun delete(n: Node<V>) {
         var originColor = n.color
@@ -149,18 +151,21 @@ class Node<V : Comparable<V>>(
             } else {
                 n.parent?.right = null
             }
-            if (originColor == BLACK) n.parent?.deletingBalance()
+            if (originColor == BLACK) removeDoubleBlacks(n)
             return
         }
         //single child
         if (n.left == null || n.right == null) {
-            val x = n.right ?: n.left
-            if (x != null) {
-                n.swapWith(x)
-                n.left = x.left
-                n.right = x.right
+            val aChild = n.right ?: n.left
+            aChild?.let {
+                n.swapWith(it)
+                n.left = it.left
+                n.right = it.right
             }
-            if (originColor == BLACK) n.deletingBalance()
+            when (originColor) {
+                BLACK -> removeDoubleBlacks(n)
+                RED -> n.color = BLACK
+            }
             return
         }
         //double child
@@ -172,11 +177,74 @@ class Node<V : Comparable<V>>(
         } else if (successor.right != null) {
             successor.parent?.left = successor.right
         }
-        if (originColor == BLACK) n.deletingBalance()
+        when (originColor) {
+            BLACK -> removeDoubleBlacks(n)
+            RED -> n.color == BLACK
+        }
     }
 
-    private fun deletingBalance() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun removeDoubleBlacks(n: Node<V>) {
+        if (!n.orphan && n.color == RED) { //red-black
+            n.color = BLACK
+            return
+        }
+        if (n.root) {
+            return
+        }
+        val parent = n.parent!!
+        val s = n.brother
+        if (s == null) {
+            removeDoubleBlacks(parent)
+            return
+        }
+
+        if (s.color == RED) {
+            //rotation the sibling up & recolour the old sibling
+            if (s.isLeft) {
+                parent.rotateRight()
+            } else if (s.isRight) {
+                parent.rotateLeft()
+            }
+            parent.color = RED
+            s.color = BLACK
+            return
+        }
+
+        //double-black case
+        assert(s.color == BLACK)
+
+        if (s.left?.color == BLACK && s.right?.color == BLACK) {
+            n.color = RED
+            s.color = RED
+            if (n.parent?.color == BLACK) {
+                removeDoubleBlacks(parent)
+            } else {
+                n.parent?.color = BLACK
+            }
+        } else { // some child is RED
+            //rotate sibling s & red child r (or both children are red)
+            if (s.isLeft) {
+                if (s.left?.color == RED) {
+                    parent.rotateRight()
+                    parent.left!!.color = BLACK
+                } else if (s.right?.color == RED) {
+                    s.rotateLeft()
+                    s.color == BLACK
+                    parent.rotateRight()
+                }
+            } else if (s.isRight) {
+                if (s.right?.color == RED) {
+                    parent.rotateLeft()
+                    parent.right!!.color = BLACK
+                } else if (s.left?.color == RED) {
+                    s.rotateRight()
+                    s.color == BLACK
+                    parent.rotateLeft()
+                }
+            }
+            return
+        }
+
     }
 
     override fun equals(other: Any?): Boolean {

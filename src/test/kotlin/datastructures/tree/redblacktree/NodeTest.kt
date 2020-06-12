@@ -60,4 +60,13 @@ class NodeTest {
         Assert.assertEquals(n.left?.left, Node(5, Color.RED, n.left))
 
     }
+
+    @Test
+    fun delete() {
+        val root = newTree(10, 1, 5, 7, 21, 50, 11, 51, 9, 4, 3)
+        root.visit(::printNode)
+        root.delete(21)
+        root.visit(::printNode)
+
+    }
 }
