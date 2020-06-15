@@ -156,12 +156,11 @@ class Node<V : Comparable<V>>(
         }
         //no child
         if (n.isLeaf) {
-            val s = n.brother
-            if (n.isLeft) n.parent?.left = null else n.parent?.right = null //make n orphan
             when (n.color) {
                 BLACK -> removeDoubleBlacks(n)
-                RED ->  s?.color = RED //TODO ?
+                RED ->  n.brother?.color = RED //TODO ?
             }
+            if (n.isLeft) n.parent?.left = null else n.parent?.right = null //make n orphan
             return
         }
         //single child
@@ -224,7 +223,7 @@ class Node<V : Comparable<V>>(
                     parent.left!!.color = BLACK
                 } else if (s.right?.color == RED) {
                     s.rotateLeft()
-                    s.color == BLACK
+                    s.color = BLACK
                     parent.rotateRight()
                 }
             } else if (s.isRight) {
@@ -233,7 +232,7 @@ class Node<V : Comparable<V>>(
                     parent.right!!.color = BLACK
                 } else if (s.left?.color == RED) {
                     s.rotateRight()
-                    s.color == BLACK
+                    s.color = BLACK
                     parent.rotateLeft()
                 }
             }

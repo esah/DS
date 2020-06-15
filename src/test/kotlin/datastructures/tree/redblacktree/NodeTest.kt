@@ -79,13 +79,18 @@ class NodeTest {
 
     @Test
     fun delete() {
-        val root = newTree(10, 1, 5, 7, 21, 50, 11, 51, 9, 4, 3)
+        val root = newTree(10, 1, 5, 7, 21, 50, 11, 51)
         root.visit(::printNode)
         root.delete(21)
         root.visit(::printNode)
+        root.delete(7)
+        root.visit(::printNode)
         root.delete(11)
         root.visit(::printNode)
-        root.delete(7)
+
+        root.delete(1)
+        root.visit(::printNode)
+        root.delete(51)
         root.visit(::printNode)
 
     }
