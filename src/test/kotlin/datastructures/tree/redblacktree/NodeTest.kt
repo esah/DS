@@ -26,7 +26,23 @@ class NodeTest {
         val ten = root.find(10)!!
         Assert.assertEquals(Color.RED, ten.color)
         Assert.assertTrue(ten.parent === root)
+    }
 
+    @Test
+    fun insert2() {
+        val root = newTree(10, 1, 5, 7, 21, 50, 11)
+        Assert.assertEquals(5, root.key)
+        Assert.assertEquals(Color.BLACK, root.color)
+
+        root.insert(51)
+
+        Assert.assertEquals(10, root.key)
+        Assert.assertEquals(Color.BLACK, root.color)
+
+        Assert.assertEquals(Color.RED, root.right!!.color)
+        Assert.assertEquals(21, root.right!!.key)
+        Assert.assertEquals(Color.RED, root.left!!.color)
+        Assert.assertEquals(5, root.left!!.key)
     }
 
     @Test
