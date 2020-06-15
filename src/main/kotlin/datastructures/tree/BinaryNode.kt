@@ -5,7 +5,8 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     var left: N?
     var right: N?
 
-    fun isLeaf(): Boolean = left == null && right == null
+    val isLeaf
+        get() = left == null && right == null
 
     fun rotateLeft() {
         if (right != null) {
@@ -81,7 +82,7 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
     fun getHeight2(): Int {
         var height = 0
         visit { n, d ->
-            if (n.isLeaf()) {
+            if (n.isLeaf) {
                 height = maxOf(height, d)
             }
         }
@@ -124,6 +125,7 @@ interface BinaryNode<V: Comparable<V>, N: BinaryNode<V, N>> {
         val p = maxParent()
         return p.right ?: p
     }
+
     fun maxParent(parent: N? = null): N {
         return when (right) {
             null -> parent ?: this as N

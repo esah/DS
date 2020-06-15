@@ -73,7 +73,7 @@ class Node<V : Comparable<V>>(
     fun delete(value: V) {
         val (n, parent) = scan(value, null) ?: return
 
-        if (n.isLeaf()) {
+        if (n.isLeaf) {
             removeLeaf(parent, n)
             return
         }

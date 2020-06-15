@@ -61,8 +61,12 @@ class Node<V : Comparable<V>>(
         n.color = tmpColor
     }
 
-    override fun swapWith(n: Node<V>) {
+    fun swapValue(n: Node<V>) {
         super.swapWith(n)
+    }
+
+    override fun swapWith(n: Node<V>) {
+        swapValue(n)
         swapColors(n)
     }
 
@@ -143,43 +147,35 @@ class Node<V : Comparable<V>>(
     fun delete(v: V) = scan(v, null)?.first?.let { delete(it) }
 
     fun delete(n: Node<V>) {
-        var originColor = n.color
+        //double child
+        if (n.left != null && n.right != null) {
+            val successor = n.successor()!!
+            n.swapValue(successor)
+            delete(successor)
+            return
+        }
         //no child
-        if (n.isLeaf()) { //?
-            if (n.isLeft) {
-                n.parent?.left = null
-            } else {
-                n.parent?.right = null
+        if (n.isLeaf) {
+            val s = n.brother
+            if (n.isLeft) n.parent?.left = null else n.parent?.right = null //make n orphan
+            when (n.color) {
+                BLACK -> removeDoubleBlacks(n)
+                RED ->  s?.color = RED //TODO ?
             }
-            if (originColor == BLACK) removeDoubleBlacks(n)
             return
         }
         //single child
-        if (n.left == null || n.right == null) {
-            val aChild = n.right ?: n.left
-            aChild?.let {
-                n.swapWith(it)
-                n.left = it.left
-                n.right = it.right
-            }
-            when (originColor) {
-                BLACK -> removeDoubleBlacks(n)
-                RED -> n.color = BLACK
-            }
-            return
-        }
-        //double child
-        val successor = n.right?.successor()!!
-        originColor = successor.color
-        n.swapWith(successor)
-        if (successor.parent == n) {
-            n.right = successor.right
-        } else if (successor.right != null) {
-            successor.parent?.left = successor.right
-        }
-        when (originColor) {
-            BLACK -> removeDoubleBlacks(n)
-            RED -> n.color == BLACK
+        assert(n.left == null || n.right == null)
+        val originColor = n.color
+        val ch = (n.right ?: n.left)!!
+        n.swapWith(ch)
+        n.left = ch.left
+        n.right = ch.right
+        val doubleBlack = originColor == BLACK && ch.color == BLACK
+        if (doubleBlack) {
+            removeDoubleBlacks(n)
+        } else {
+            n.color = BLACK
         }
     }
 
@@ -207,14 +203,13 @@ class Node<V : Comparable<V>>(
             }
             parent.color = RED
             s.color = BLACK
+            removeDoubleBlacks(n)
             return
         }
 
-        //double-black case
         assert(s.color == BLACK)
 
         if (s.left?.color == BLACK && s.right?.color == BLACK) {
-            n.color = RED
             s.color = RED
             if (n.parent?.color == BLACK) {
                 removeDoubleBlacks(parent)
@@ -242,7 +237,6 @@ class Node<V : Comparable<V>>(
                     parent.rotateLeft()
                 }
             }
-            return
         }
 
     }

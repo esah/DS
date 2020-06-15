@@ -67,6 +67,10 @@ class NodeTest {
         root.visit(::printNode)
         root.delete(21)
         root.visit(::printNode)
+        root.delete(11)
+        root.visit(::printNode)
+        root.delete(7)
+        root.visit(::printNode)
 
     }
 }
